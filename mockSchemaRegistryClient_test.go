@@ -53,15 +53,15 @@ func init() {
 	srClient = CreateMockSchemaRegistryClient("mock://testingUrl")
 
 	// Test Schema and Value Schema creation
-	_, _ = srClient.CreateSchema("test1-value", schema, Avro)
-	_, _ = srClient.CreateSchema("test1-key", schema, Avro)
+	_, _ = srClient.CreateSchema("test1-value", schema)
+	_, _ = srClient.CreateSchema("test1-key", schema)
 	// Test version upgrades for key and value and more registration
-	_, _ = srClient.CreateSchema("test1-value", schema2, Avro)
-	_, _ = srClient.CreateSchema("test1-key", schema2, Avro)
+	_, _ = srClient.CreateSchema("test1-value", schema2)
+	_, _ = srClient.CreateSchema("test1-key", schema2)
 
 	// Test version upgrades for key and value and more registration (arbitrary subject)
-	_, _ = srClient.CreateSchema("test1_arb", schema3, Avro)
-	_, _ = srClient.CreateSchema("test1_arb", schema4, Avro)
+	_, _ = srClient.CreateSchema("test1_arb", schema3)
+	_, _ = srClient.CreateSchema("test1_arb", schema4)
 }
 
 func TestMockSchemaRegistryClient_CreateSchema(t *testing.T) {
@@ -90,11 +90,11 @@ func TestMockSchemaRegistryClient_CreateSchema(t *testing.T) {
 	assert.Equal(t, 2, schemaReg6.version)
 
 	// Test registering already registered schema
-	_, err := srClient.CreateSchema("test1-key", schema, Avro)
+	_, err := srClient.CreateSchema("test1-key", schema)
 	assert.EqualError(t, err, "POST \"mock://testingUrl/subjects/test1-key/versions\": Schema already registered with id 2")
 
 	// Test registering already registered schema
-	_, err = srClient.CreateSchema("test1_arb", schema3, Avro)
+	_, err = srClient.CreateSchema("test1_arb", schema3)
 	assert.EqualError(t, err, "POST \"mock://testingUrl/subjects/test1_arb/versions\": Schema already registered with id 5")
 }
 

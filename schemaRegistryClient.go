@@ -26,13 +26,13 @@ type ISchemaRegistryClient interface {
 	GetLatestSchema(subject string) (*Schema, error)
 	GetSchemaVersions(subject string) ([]int, error)
 	GetSchemaByVersion(subject string, version int) (*Schema, error)
-	CreateSchema(subject string, schema string, schemaType SchemaType, references ...Reference) (*Schema, error)
+	CreateSchema(subject string, schema string) (*Schema, error)
 	DeleteSubject(subject string, permanent bool) error
 	SetCredentials(username string, password string)
 	SetTimeout(timeout time.Duration)
 	CachingEnabled(value bool)
 	CodecCreationEnabled(value bool)
-	IsSchemaCompatible(subject, schema, version string, schemaType SchemaType) (bool, error)
+	IsSchemaCompatible(subject, schema, version string) (bool, error)
 }
 
 // SchemaRegistryClient allows interactions with
@@ -94,9 +94,7 @@ type credentials struct {
 }
 
 type schemaRequest struct {
-	Schema     string      `json:"schema"`
-	SchemaType string      `json:"schemaType"`
-	References []Reference `json:"references"`
+	Schema string `json:"schema"`
 }
 
 type schemaResponse struct {
@@ -229,23 +227,12 @@ func (client *SchemaRegistryClient) GetSchemaByVersion(subject string, version i
 // CreateSchema creates a new schema in Schema Registry and associates
 // with the subject provided. It returns the newly created schema with
 // all its associated information.
-func (client *SchemaRegistryClient) CreateSchema(subject string, schema string,
-	schemaType SchemaType, references ...Reference) (*Schema, error) {
-	switch schemaType {
-	case Avro, Json:
-		compiledRegex := regexp.MustCompile(`\r?\n`)
-		schema = compiledRegex.ReplaceAllString(schema, " ")
-	case Protobuf:
-		break
-	default:
-		return nil, fmt.Errorf("invalid schema type. valid values are Avro, Json, or Protobuf")
-	}
+func (client *SchemaRegistryClient) CreateSchema(subject string, schema string) (*Schema, error) {
 
-	if references == nil {
-		references = make([]Reference, 0)
-	}
+	compiledRegex := regexp.MustCompile(`\r?\n`)
+	schema = compiledRegex.ReplaceAllString(schema, " ")
 
-	schemaReq := schemaRequest{Schema: schema, SchemaType: schemaType.String(), References: references}
+	schemaReq := schemaRequest{Schema: schema}
 	schemaBytes, err := json.Marshal(schemaReq)
 	if err != nil {
 		return nil, err
@@ -294,8 +281,8 @@ func (client *SchemaRegistryClient) CreateSchema(subject string, schema string,
 
 // IsSchemaCompatible checks if the given schema is compatible with the given subject and version
 // valid versions are versionID and "latest"
-func (client *SchemaRegistryClient) IsSchemaCompatible(subject, schema, version string, schemaType SchemaType) (bool, error) {
-	schemaReq := schemaRequest{Schema: schema, SchemaType: schemaType.String(), References: make([]Reference, 0)}
+func (client *SchemaRegistryClient) IsSchemaCompatible(subject, schema, version string) (bool, error) {
+	schemaReq := schemaRequest{Schema: schema}
 	schemaReqBytes, err := json.Marshal(schemaReq)
 	if err != nil {
 		return false, err

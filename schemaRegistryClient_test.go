@@ -19,7 +19,6 @@ func bodyToString(in io.ReadCloser) string {
 	buf.ReadFrom(in)
 	return buf.String()
 }
-
 func TestSchemaRegistryClient_CreateSchemaWithoutReferences(t *testing.T) {
 
 	{
@@ -35,9 +34,7 @@ func TestSchemaRegistryClient_CreateSchemaWithoutReferences(t *testing.T) {
 			case "/subjects/test1-value/versions":
 
 				requestPayload := schemaRequest{
-					Schema:     "test2",
-					SchemaType: Protobuf.String(),
-					References: []Reference{},
+					Schema: "test2",
 				}
 				expected, _ := json.Marshal(requestPayload)
 				// Test payload
@@ -55,7 +52,7 @@ func TestSchemaRegistryClient_CreateSchemaWithoutReferences(t *testing.T) {
 
 		srClient := CreateSchemaRegistryClient(server.URL)
 		srClient.CodecCreationEnabled(false)
-		schema, err := srClient.CreateSchema("test1-value", "test2", Protobuf)
+		schema, err := srClient.CreateSchema("test1-value", "test2")
 
 		// Test response
 		assert.NoError(t, err)
@@ -78,9 +75,7 @@ func TestSchemaRegistryClient_CreateSchemaWithoutReferences(t *testing.T) {
 			switch req.URL.String() {
 			case "/subjects/test1/versions":
 				requestPayload := schemaRequest{
-					Schema:     "test2",
-					SchemaType: Avro.String(),
-					References: []Reference{},
+					Schema: "test2",
 				}
 				expected, _ := json.Marshal(requestPayload)
 				// Test payload
@@ -98,7 +93,7 @@ func TestSchemaRegistryClient_CreateSchemaWithoutReferences(t *testing.T) {
 
 		srClient := CreateSchemaRegistryClient(server.URL)
 		srClient.CodecCreationEnabled(false)
-		schema, err := srClient.CreateSchema("test1", "test2", Avro)
+		schema, err := srClient.CreateSchema("test1", "test2")
 
 		// Test response
 		assert.NoError(t, err)

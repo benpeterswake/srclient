@@ -47,16 +47,10 @@ we set this schema as the first version of the subject and store it in memory.
 
 Note that there is no enforcement of schema compatibility, any schema goes for all subjects.
 */
-func (mck MockSchemaRegistryClient) CreateSchema(subject string, schema string, schemaType SchemaType, references ...Reference) (*Schema, error) {
-	switch schemaType {
-	case Avro, Json:
-		compiledRegex := regexp.MustCompile(`\r?\n`)
-		schema = compiledRegex.ReplaceAllString(schema, " ")
-	case Protobuf:
-		break
-	default:
-		return nil, fmt.Errorf("invalid schema type. valid values are Avro, Json, or Protobuf")
-	}
+func (mck MockSchemaRegistryClient) CreateSchema(subject string, schema string) (*Schema, error) {
+
+	compiledRegex := regexp.MustCompile(`\r?\n`)
+	schema = compiledRegex.ReplaceAllString(schema, " ")
 
 	// Subject exists, we just need a new version of the schema registered
 	resultFromSchemaCache, ok := mck.schemaCache[subject]
@@ -186,7 +180,7 @@ func (mck MockSchemaRegistryClient) CodecCreationEnabled(value bool) {
 	// Nothing because codecs do not matter in the inMem storage of schemas
 }
 
-func (mck MockSchemaRegistryClient) IsSchemaCompatible(subject, schema, version string, schemaType SchemaType) (bool, error) {
+func (mck MockSchemaRegistryClient) IsSchemaCompatible(subject, schema, version string) (bool, error) {
 	return false, errors.New("mock schema registry client can't check for schema compatibility")
 }
 
