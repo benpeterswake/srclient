@@ -29,7 +29,7 @@ This client is a Go module, therefore you can have it simply by adding the follo
 
 [source,golang]
 ----
-import "github.com/benpeterscode/srclient"
+import "github.com/benpeterswake/srclient"
 ----
 
 Then run a build to have this client automatically added to your go.mod file as a dependency.
@@ -38,7 +38,7 @@ Manual install:
 
 [source,bash]
 ----
-go get -u github.com/benpeterscode/srclient
+go get -u github.com/benpeterswake/srclient
 ----
 
 == Examples
@@ -53,7 +53,7 @@ import (
 	"io/ioutil"
 
 	"github.com/google/uuid"
-	"github.com/benpeterscode/srclient"
+	"github.com/benpeterswake/srclient"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 )
 
@@ -130,7 +130,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/benpeterscode/srclient"
+	"github.com/benpeterswake/srclient"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 )
 

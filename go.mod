@@ -1,4 +1,4 @@
-module github.com/benpeterscode/srclient
+module github.com/benpeterswake/srclient
 
 go 1.17
 
